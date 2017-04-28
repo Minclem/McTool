@@ -56,7 +56,7 @@ Dialog.prototype.$dialog = function (options) {
     var dialogContext = document.createElement('div');
 
     dialogCloseIcon.className = 'dialog-close';
-    dialogContext.className = 'dialog-context text-center'
+    dialogContext.className = 'dialog-context'
 
     // close button
     dialogCloseIcon.onclick = closeDialog
