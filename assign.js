@@ -17,3 +17,21 @@ const assign = (target, varArgs) => {
   }
   return to;
 }
+
+const extend = (target, source, deep) => {
+  for (var key in source) {
+    if (deep && isPlainObject(source[key]) || isArray(source[key])) {
+      if (isPlainObject(source[key]) && !isPlainObject(target[key])) target[key] = {}
+      if (isArray(source[key]) && !isArray(target[key])) target[key] = []
+
+      extend(target[key], source[key], deep)
+    } else if (source[key] !== undefined) {
+      target[key] = source[key]
+    }
+  }
+}
+
+module.exports = {
+  assign: assign,
+  extend: extend
+}
