@@ -1,145 +1,194 @@
-import Dialog from './dialog'
-
-class UtilFn {
-  constructor () {
-    this.division = this.division.bind(this)
-  }
-  isNumber (num) {
-    return !isNaN(parseFloat(num)) && isFinite(num)
-  }
-  // 数值转换
-  division (num = 0, breakpoint = 0) {
-    if (!this.isNumber(parseFloat(num)) || breakpoint > 3 || breakpoint < 0 || num === 0) return num
-    num = Math.floor(num)
-    var $num = num.toString().indexOf('.') === -1
-      ? num.toString().replace(/\d{1,4}(?=(\d{4})+$)/g, '$&,').split(',')
-      : num.toString().replace(/(\d)(?=(\d{4})+\.)/g, function ($0, $1) {
-        return $1 + ','
-      }).split(',')
-    if (breakpoint === 0) return $num
-  }
-  // 数据获取
-    // 当存在回调函数时 回调函数内部需要返回数据本身
-    // 以便于进行数据的缓存
-  getDetail (url, field, params = {}, callback) {
-    if (typeof params === 'function') {
-      callback = params
-      params = {}
-    }
-
-    let _store = this.$store
-    let _cache = _store.state.cache
-
-    _cache[field] && (this.pageInfo = _cache[field])
-
-    this.$http.get(_store.state.api[url], {'params': params}).then(function (res) {
-      if (res.data.error_code === '0') {
-        let obj = Object.create(null)
-        /**
-         *  当存在回调方法时值由回调方法返回， 不进行直接的赋值
-         */
-        this[field] = !!callback ? callback(res.data.data) : res.data.data
-
-        obj[field] = this[field]
-        _store.commit('modify', obj)
-      }
-
-    })
-  }
-  // iScroll 插件配置 默认返回对象本身
-  scrollSet (obj, config) {
-    var dftObj, 
-        options,
-        scrollBox,
-        pullDown,
-        pullUp,
-        loadingStep = 0
-    
-    dftObj = {
-      refreshFn: function(){},
-      loadFn: function(){}
-    }
-    options = Object.assign({}, dftObj, config)
-
-    obj = document.querySelector('#'+obj)
-
-    // 插件初始化
-    scrollBox = new IScroll(obj, {
-      scrollbars: true,  
-      mouseWheel: false,  
-      interactiveScrollbars: true,  
-      shrinkScrollbars: 'scale',  
-      fadeScrollbars: true,  
-      scrollY:true,  
-      probeType: 2,  
-      bindToWrapper:true
-    });
-
-    // 上拉/下拉 提示
-    pullDown = obj.querySelector('.pull-down')
-    pullUp = obj.querySelector('.pull-up')
-
-    // 滚动
-    scrollBox.on("scroll",function(){
-      var _getClass;
-
-      if (this.y < 40 && this.y > 2 && loadingStep == 0){
-        pullDown.innerText = '下拉刷新';
-      }
-      if (this.y > 40) {
-        _getClass = pullDown.getAttribute("class");
-
-        if(!_getClass.match('refresh')) pullDown.className = _getClass + ' refresh';
-
-        pullDown.style.display = 'block';
-        pullDown.innerText = '松手刷新数据';
-
-        loadingStep = 1;
-      } else if (this.y < (this.maxScrollY - 14)) {
-        _getClass = pullUp.getAttribute("class");
-
-        if(!_getClass.match('refresh')) pullUp.className = _getClass + ' refresh';
-
-        pullUp.style.display = 'block';
-        pullUp.innerText = '正在载入';
-
-        loadingStep = 1; 
-      }
-    })
-    scrollBox.on("scrollEnd",function(){  
-      if (loadingStep == 1) {
-        if( pullDown.getAttribute("class").match("refresh") ){
-          options.refreshFn(scrollBox)
-          pullDown.innerText = '正在刷新'
-          loadingStep = 0
-
-          setTimeout(function(){
-            pullDown.className = pullDown.getAttribute("class").replace(/refresh/g, '')
-            pullDown.style.innerText = '下拉刷新'
-            pullDown.style.display = 'none'
-          }, 1000)
-        } else if(pullUp.getAttribute("class").match("refresh")) {
-          options.loadFn(scrollBox)
-          pullUp.style.display = 'none'
-          pullUp.innerText = '上拉加载更多'
-
-          setTimeout(function(){
-            pullUp.className = pullDown.getAttribute("class").replace(/refresh/g, '')
-          }, 600)
-        }
-      }
-    });
-
-    return scrollBox
-  }
-  // 错误提示
-  errorTips (error) {
-    Dialog.$dialog ({
-      type: 'error',
-      template: error
-    })
-  }
-  _dialog = Dialog.$dialog 
+/**
+ * 是否定义
+ *
+ * @param  { Mixed }   o
+ * @return { Boolean } bool
+ */
+function isUndefined (o) {
+    return o === void 0
 }
 
-export default new UtilFn()
+/**
+ * 是否数字
+ *
+ * @param  { Number, String }   n
+ * @return { Boolean } bool
+ */
+function isNumber (n) {
+    return parseInt(n) === parseInt(n) && +n === +n
+}
+
+/**
+ * 判断两个值是否不同
+ *
+ * @param  { Mixed }    a
+ * @param  { Mixed }    b
+ * @return { Boolean }  bool
+ */
+
+function isDiff (a, b) {
+    return typeof a === typeof b ? JSON.stringify(a) !== JSON.stringify(b) : false
+}
+
+/**
+ * 是否为函数
+ *
+ * @param  { Mixed }    fn
+ * @return { Boolean }  bool
+ */
+
+function isFn (fn) {
+    return typeof fn === 'function'
+}
+
+/**
+ * 是否为对象（数组，对象）
+ *
+ * @param  { Mixed }    obj
+ * @return { Boolean }  bool
+ */
+
+function isObj (obj) {
+    return obj && typeof obj === 'object' ? true : false
+}
+
+/**
+ * 是否为字符串
+ *
+ * @param  { String }    str
+ * @return { Boolean }  bool
+ */
+
+function isStr (str) {
+    return typeof str === 'string'
+}
+
+/**
+ * 判断是否为 iOS
+ *
+ * @returns { Boolean } boolean 
+ */
+
+function iOS () {
+    return (/iPhone|iPad|iPod/).test(navigator.userAgent)
+}
+
+/**
+ * 判断是否为 Android
+ *
+ * @returns { Boolean }  boolean 
+ */
+
+function isAndroid () {
+    return (/Android/).test(navigator.userAgent)
+}
+
+/**
+ * 内容重复
+ *
+ * @returns { String }  str 
+ */
+
+function strRepeat (str, n) {
+    if (!str) return ''
+    if (!isNumber(n) || n <= 1) return str
+    let _str = ''
+    for (var i = n - 1; i >= 0; i--) _str += str
+    return _str
+}
+
+/**
+ * 手机号加密
+ *
+ * @returns { String }  phone 
+ */
+function encodePhone (phone) {
+    if (!phone || isNumber(phone)) {
+        return phone.toString().replace(/^(\d{3})(\d{4})(\d{4})/, function ($1, $2, $3, $4) {
+            return [$2, strRepeat('*', $3.length), $4].join('')
+        })
+    } else {
+        return phone || ''
+    }
+}
+
+/**
+ * 克隆
+ *
+ * @param  { Mixed }   obj
+ * @return { Mixed }   obj
+ */
+
+function clone (obj) {
+    if (isObj(obj)) {
+        return JSON.parse(JSON.stringify(obj))
+    } else {
+        return isFn(obj) ? new obj : obj
+    }
+}
+
+/**
+ * 数值格式化
+ *
+ * @param   { Number } n
+ * @returns { String, Number }
+ */
+
+function formatNum (n) {
+    return n >= 10 ? n : '0' + n
+}
+
+/**
+ * 日期格式化
+ *
+ * @param   { Number, Date Object } date 时间对象 或者 时间戳
+ * @param   { String } format 返回的格式 time: 时间, date：日期, 默认全部显示
+ * @returns { String }  返回格式后的时间字符串
+ */
+
+function formatDate (date, format) {
+    // 服务端返回的时间戳可能以秒的形式
+    if (date == null) return
+    date = parseInt(date.toString().length < 11 ? date * 1000 : date)
+
+    date = new Date(date)
+
+    let y = date.getFullYear()
+    let M = date.getMonth() + 1
+    let d = date.getDate()
+    let h = date.getHours()
+    let m = date.getMinutes()
+    let s = date.getSeconds()
+
+    M = formatNum(M)
+    d = formatNum(d)
+    h = formatNum(h)
+    m = formatNum(m)
+    s = formatNum(s)
+
+    if (format === 'time') {
+        return h + ':' + m + ':' + s
+    } else if (format === 'date') {
+        return y + '-' + M + '-' + d
+    } else {
+        return y + '-' + M + '-' + d + ' ' + h + ':' + m + ':' + s
+    }
+
+}
+
+
+export default {
+    isUndefined,
+    isNumber,
+    isDiff,
+    isFn,
+    isObj,
+    isStr,
+    iOS,
+    isAndroid,
+    strRepeat,
+    encodePhone,
+    clone,
+    formatNum,
+    formatDate
+}
