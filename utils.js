@@ -4,6 +4,7 @@
  * @param  { Mixed }   o
  * @return { Boolean } bool
  */
+
 function isUndefined (o) {
     return o === void 0
 }
@@ -14,6 +15,7 @@ function isUndefined (o) {
  * @param  { Number, String }   n
  * @return { Boolean } bool
  */
+
 function isNumber (n) {
     return parseInt(n) === parseInt(n) && +n === +n
 }
@@ -102,6 +104,7 @@ function strRepeat (str, n) {
  *
  * @returns { String }  phone 
  */
+
 function encodePhone (phone) {
     if (!phone || isNumber(phone)) {
         return phone.toString().replace(/^(\d{3})(\d{4})(\d{4})/, function ($1, $2, $3, $4) {
