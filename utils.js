@@ -66,6 +66,16 @@ function isStr (str) {
 }
 
 /**
+ * 是否为邮箱
+ *
+ * @param  { Mixed }    str
+ * @return { Boolean }  bool
+ */
+function isEmail (str) {
+    return /^[0-9a-z][_.0-9a-z-]{0,31}@([0-9a-z][0-9a-z-]{0,30}[0-9a-z]\.){1,3}[a-z]{2,4}$/.test(str)
+}
+
+/**
  * 判断是否为 iOS
  *
  * @returns { Boolean } boolean 
@@ -187,6 +197,7 @@ export default {
     isFn,
     isObj,
     isStr,
+    isEmail,
     iOS,
     isAndroid,
     strRepeat,
