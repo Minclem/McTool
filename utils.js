@@ -17,7 +17,7 @@ function isUndefined (o) {
  */
 
 function isNumber (n) {
-    return parseInt(n) === parseInt(n) && +n === +n
+    return parseInt(n) === parseInt(n) && -n === -n
 }
 
 /**
