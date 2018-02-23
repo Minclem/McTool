@@ -1,4 +1,15 @@
 /**
+ * 是否一般对象
+ *
+ * @param  { Mixed }   obj
+ * @return { Boolean } bool
+ */
+
+function isPlainObject (obj) {
+    return isObj(obj) && !(obj !== null && obj === obj.window) && Object.getPrototypeOf(obj) === Object.prototype
+}
+
+/**
  * 是否数组
  *
  * @param  { Mixed }   obj
