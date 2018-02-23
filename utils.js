@@ -4,6 +4,7 @@
  * @param  { Mixed }   obj
  * @return { Boolean } bool
  */
+
 function isArray (obj) {
     return Array.isArray ? Array.isArray(obj) : Object.prototype.toString.call(obj) === '[object Array]'
 }
