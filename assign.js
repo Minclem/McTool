@@ -1,4 +1,10 @@
 // Object.assign
+
+import {
+  isPlainObject,
+  isArray
+} from './utils'
+
 const assign = (target, varArgs) => {
   if (target == null) {
     throw new TypeError('Cannot convert undefined or null to object');
