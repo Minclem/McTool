@@ -213,6 +213,7 @@ function formatDate (date, format) {
 
 
 export default {
+    isPlainObject,
     isArray,
     isUndefined,
     isNumber,
