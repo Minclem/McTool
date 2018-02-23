@@ -1,4 +1,23 @@
 /**
+ * 是否为ie8/9
+ * @returns {boolean}
+ */
+
+function isIe89 () {
+    return /MSIE (8|9)\.0/.test(navigator.userAgent)
+}
+
+/**
+ * 是否为整数(字符串数值亦可)
+ * @param n
+ * @returns {boolean}
+ */
+
+function isInt (n) {
+    return /^[0-9]+$/.test(n)
+}
+
+/**
  * 是否一般对象
  *
  * @param  { Mixed }   obj
@@ -98,12 +117,32 @@ function isEmail (str) {
 }
 
 /**
+ * 是否为链接
+ * @param str
+ * @returns {boolean}
+ */
+
+function isUrl (str) {
+    return /^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-.,@?^=%&amp;:/~+#]*[\w\-@?^=%&amp;/~+#])?$/.test(str)
+}
+
+/**
+ * 是否为手机(只进行以1开头的11位数验证， 防止出现问题，如发行新的手机段)
+ * @param str
+ * @returns {boolean}
+ */
+
+function isPhone (str) {
+    return /^1\d{10}$/.test(str)
+}
+
+/**
  * 判断是否为 iOS
  *
  * @returns { Boolean } boolean 
  */
 
-function iOS () {
+function isIOS () {
     return (/iPhone|iPad|iPod/).test(navigator.userAgent)
 }
 
@@ -115,6 +154,46 @@ function iOS () {
 
 function isAndroid () {
     return (/Android/).test(navigator.userAgent)
+}
+
+/**
+ * 是否中文名称
+ * @param str
+ * @returns {boolean}
+ */
+
+function isChinese (str) {
+    return /^[\u4e00-\u9fa5·]+$/.test(str)
+}
+
+/**
+ * 是否英文名称
+ * @param str
+ * @returns {boolean}
+ */
+
+function isEnglish (str) {
+    return /^[a-zA-Z\\s]+/.test(str)
+}
+
+/**
+ * 是否为护照
+ * @param str
+ * @returns {boolean}
+ */
+
+function isPassport (str) {
+    return /^[a-zA-Z0-9]{5,17}$/.test(str)
+}
+
+/**
+ * 是否为身份证
+ * @param str
+ * @returns {boolean}
+ */
+
+function isIdCard (str) {
+    return /(^\d{15}$)|(^\d{17}([0-9]|X)$)/i.test(str)
 }
 
 /**
@@ -208,11 +287,44 @@ function formatDate (date, format) {
     } else {
         return y + '-' + M + '-' + d + ' ' + h + ':' + m + ':' + s
     }
+}
 
+/**
+ * 获取文件路径
+ * @param file
+ * @returns {*}
+ */
+
+function getObjectURL (file) {
+    var url = null
+
+    if (window.URL) {
+        url = window.URL.createObjectURL(file)
+    } else if (window.webkitURL) {
+        url = window.webkitURL.createObjectURL(file)
+    } else {
+        file.select()
+        file.blur()
+        url = document.selection.createRange().text
+    }
+
+    return url
+}
+
+/**
+ * 获取文件拓展名
+ * @param obj
+ * @returns {string}
+ */
+
+function getFileExt (obj) {
+    return obj.value.substr(obj.value.lastIndexOf('.')).toLowerCase()
 }
 
 
 export default {
+    isInt,
+    isIe89,
     isPlainObject,
     isArray,
     isUndefined,
@@ -221,12 +333,20 @@ export default {
     isFn,
     isObj,
     isStr,
+    isPhone,
     isEmail,
-    iOS,
+    isUrl,
+    isIOS,
     isAndroid,
+    isChinese,
+    isEnglish,
+    isPassport,
+    isIdCard,
     strRepeat,
     encodePhone,
     clone,
     formatNum,
-    formatDate
+    formatDate,
+    getObjectURL,
+    getFileExt
 }
