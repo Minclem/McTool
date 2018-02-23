@@ -1,4 +1,14 @@
 /**
+ * 是否数组
+ *
+ * @param  { Mixed }   obj
+ * @return { Boolean } bool
+ */
+function isArray (obj) {
+    return Array.isArray ? Array.isArray(obj) : Object.prototype.toString.call(obj) === '[object Array]'
+}
+
+/**
  * 是否定义
  *
  * @param  { Mixed }   o
@@ -191,6 +201,7 @@ function formatDate (date, format) {
 
 
 export default {
+    isArray,
     isUndefined,
     isNumber,
     isDiff,
