@@ -1,2 +1,2 @@
-# code-snippet
-Some commonly used code snippets
+# McTool
+Common tool code set
